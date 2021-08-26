@@ -94,11 +94,20 @@ AdvancedColumnFamilyOptions::AdvancedColumnFamilyOptions(const Options& options)
     max_bytes_for_level_multiplier_additional.resize(num_levels, 1);
   }
 }
-
+  
 ColumnFamilyOptions::ColumnFamilyOptions()
     : compression(Snappy_Supported() ? kSnappyCompression : kNoCompression),
       table_factory(
-          std::shared_ptr<TableFactory>(new BlockBasedTableFactory())) {}
+          std::shared_ptr<TableFactory>(new BlockBasedTableFactory())) {
+  terarkdb::TerarkZipTableOptions tzt_options;
+  tzt_options.localTempDir = "./tmp/db";
+  tzt_options.indexNestLevel = 3;
+  tzt_options.sampleRatio = 0.01;
+  tzt_options.terarkZipMinLevel = 1; // Start using TerarkZipTable from level 2
+  // reset table...
+  table_factory.reset(
+        NewTerarkZipTableFactory(tzt_options, table_factory));
+}
 
 ColumnFamilyOptions::ColumnFamilyOptions(const Options& options)
     : ColumnFamilyOptions(*static_cast<const ColumnFamilyOptions*>(&options)) {}
