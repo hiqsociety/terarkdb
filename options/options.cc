@@ -100,10 +100,10 @@ ColumnFamilyOptions::ColumnFamilyOptions()
       table_factory(
           std::shared_ptr<TableFactory>(new BlockBasedTableFactory())) {
   terarkdb::TerarkZipTableOptions tzt_options;
-  tzt_options.localTempDir = "./tmp/db";
+  tzt_options.localTempDir = "/tmp";
   tzt_options.indexNestLevel = 3;
   tzt_options.sampleRatio = 0.01;
-  tzt_options.terarkZipMinLevel = 1; // Start using TerarkZipTable from level 2
+  tzt_options.terarkZipMinLevel = 2; // Start using TerarkZipTable from level 2
   // reset table...
   table_factory.reset(
         NewTerarkZipTableFactory(tzt_options, table_factory));
